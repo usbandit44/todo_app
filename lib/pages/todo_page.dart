@@ -16,6 +16,9 @@ class TodoPage extends StatefulWidget {
 class _TodoPageState extends State<TodoPage> {
   bool _crossFadeState = true;
   bool _isVisable = true;
+  final _textController = TextEditingController();
+  String userTodo = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,17 +31,24 @@ class _TodoPageState extends State<TodoPage> {
         firstChild: Container(
           color: Colors.amber[600],
           alignment: Alignment.center,
-          child: Text('you'),
+          child: Text(userTodo),
         ),
         secondChild: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.fromLTRB(50, 200, 50, 0),
               child: TextField(
+                controller: _textController,
                 decoration: InputDecoration(
                   hintText: 'What you need to',
                   border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      _textController.clear();
+                    },
+                    icon: Icon(Icons.clear),
+                  ),
                 ),
               ),
             ),
@@ -49,6 +59,7 @@ class _TodoPageState extends State<TodoPage> {
                   setState(() {
                     _crossFadeState = true;
                     _isVisable = true;
+                    userTodo = _textController.text;
                   });
                 },
                 child: const Text('Done'),
