@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app/task_class.dart';
 
 void main() {
   runApp(
@@ -17,7 +18,7 @@ class _TodoPageState extends State<TodoPage> {
   bool _crossFadeState = true;
   bool _isVisable = true;
   final _textController = TextEditingController();
-  String userTodo = '';
+  Tasks tasks = Tasks();
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +27,28 @@ class _TodoPageState extends State<TodoPage> {
         title: const Text('Welcome usbandit'),
         backgroundColor: Colors.black54,
         centerTitle: true,
+        leading: Visibility(
+          visible: _crossFadeState ? false : true,
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(
+                () {
+                  _crossFadeState = true;
+                  _isVisable = true;
+                  _textController.clear();
+                },
+              );
+              _crossFadeState = true;
+            },
+          ),
+        ),
       ),
       body: AnimatedCrossFade(
         firstChild: Container(
           color: Colors.amber[600],
           alignment: Alignment.center,
-          child: Text(userTodo),
+          child: Text(tasks.toString()),
         ),
         secondChild: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -59,7 +76,8 @@ class _TodoPageState extends State<TodoPage> {
                   setState(() {
                     _crossFadeState = true;
                     _isVisable = true;
-                    userTodo = _textController.text;
+                    tasks.addTask(_textController.text);
+                    _textController.clear();
                   });
                 },
                 child: const Text('Done'),
@@ -70,7 +88,7 @@ class _TodoPageState extends State<TodoPage> {
         crossFadeState: _crossFadeState
             ? CrossFadeState.showFirst
             : CrossFadeState.showSecond,
-        duration: Duration(seconds: 1),
+        duration: Duration(milliseconds: 700),
       ),
       floatingActionButton: Visibility(
         child: FloatingActionButton(
